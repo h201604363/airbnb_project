@@ -1,3 +1,4 @@
+
 package airbnb;
 
 public class ReservationConfirmed extends AbstractEvent {
@@ -6,10 +7,11 @@ public class ReservationConfirmed extends AbstractEvent {
     private Long taxiId;
     private String status;
 
+
     public ReservationConfirmed(){
         super();
     }
-
+    
     public Long getRsvId() {
         return rsvId;
     }
@@ -32,3 +34,4 @@ public class ReservationConfirmed extends AbstractEvent {
         this.status = status;
     }
 }
+
