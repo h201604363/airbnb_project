@@ -10,7 +10,7 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long rsvId;
-    private Long roomId;
+    private Long taxiId;
     private String status; // VALUE = reqReserve, reserved, reqCancel, cancelled
     private Long payId; // 결제 ID : 결재 완료시 Update, 결제 취소하는 경우 사용
 
@@ -25,9 +25,9 @@ public class Reservation {
         // 예약 요청(reqReserve) 들어온 경우
         ////////////////////////////////////
 
-        // 해당 ROOM이 Available한 상태인지 체크
-        boolean result = ReservationApplication.applicationContext.getBean(airbnb.external.RoomService.class)
-                        .chkAndReqReserve(this.getRoomId());
+        // 해당 Taxi가 Available한 상태인지 체크
+        boolean result = ReservationApplication.applicationContext.getBean(taxi.external.RoomService.class)
+                        .chkAndReqReserve(this.getTaxiId());
         System.out.println("######## Check Result : " + result);
 
         if(result) { 
@@ -39,9 +39,9 @@ public class Reservation {
             //////////////////////////////
             airbnb.external.Payment payment = new airbnb.external.Payment();
             payment.setRsvId(this.getRsvId());
-            payment.setRoomId(this.getRoomId());
+            payment.setTaxiId(this.getTaxiId());
             payment.setStatus("paid");
-            ReservationApplication.applicationContext.getBean(airbnb.external.PaymentService.class)
+            ReservationApplication.applicationContext.getBean(taxi.external.PaymentService.class)
                 .approvePayment(payment);
 
             /////////////////////////////////////
@@ -107,12 +107,12 @@ public class Reservation {
     public void setRsvId(Long rsvId) {
         this.rsvId = rsvId;
     }
-    public Long getRoomId() {
-        return roomId;
+    public Long getTaxiId() {
+        return taxiId;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setTaxiId(Long taxiId) {
+        this.taxiId = taxiId;
     }
     public String getStatus() {
         return status;
