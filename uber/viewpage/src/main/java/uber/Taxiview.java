@@ -1,29 +1,29 @@
-package airbnb;
+package uber;
 
 import javax.persistence.*;
 //import java.util.List;
 
 @Entity
-@Table(name="Roomview_table")
-public class Roomview {
+@Table(name="Taxiview_table")
+public class Taxiview {
 
         @Id
-        private Long roomId;
+        private Long taxiId;
         private String desc;
         private Long reviewCnt;
-        private String roomStatus;
+        private String taxiStatus;
         private Long rsvId;
         private String rsvStatus;
         private Long payId;
         private String payStatus;
 
 
-        public Long getRoomId() {
-            return roomId;
+        public Long getTaxiId() {
+            return taxiId;
         }
 
-        public void setId(Long roomId) {
-            this.roomId = roomId;
+        public void setTaxiId(Long taxiId) {
+            this.taxiId = taxiId;
         }
 
         public String getDesc() {
@@ -42,12 +42,12 @@ public class Roomview {
             this.reviewCnt = reviewCnt;
         }
 
-        public String getRoomStatus() {
-            return roomStatus;
+        public String getTaxiStatus() {
+            return taxiStatus;
         }
 
-        public void setRoomStatus(String roomStatus) {
-            this.roomStatus = roomStatus;
+        public void setTaxiStatus(String taxiStatus) {
+            this.taxiStatus = taxiStatus;
         }
 
         public Long getRsvId() {

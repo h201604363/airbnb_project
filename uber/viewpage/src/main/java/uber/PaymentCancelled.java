@@ -1,10 +1,10 @@
-package airbnb;
+package uber;
 
 public class PaymentCancelled extends AbstractEvent {
 
     private Long payId;
     private Long rsvId;
-    private Long roomId;
+    private Long taxiId;
     private String status;
 
     public PaymentCancelled(){
@@ -26,11 +26,11 @@ public class PaymentCancelled extends AbstractEvent {
         this.rsvId = rsvId;
     }
     public Long getRoomId() {
-        return roomId;
+        return taxiId;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setTaxiId(Long taxiId) {
+        this.taxiId = taxiId;
     }
     public String getStatus() {
         return status;

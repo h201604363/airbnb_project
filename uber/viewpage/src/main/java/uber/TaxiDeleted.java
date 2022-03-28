@@ -1,23 +1,23 @@
-package airbnb;
+package uber;
 
-public class RoomModified extends AbstractEvent {
+public class TaxiDeleted extends AbstractEvent {
 
-    private Long roomId;
+    private Long taxiId;
     private String status;
     private String desc;
     private Long reviewCnt;
     private String lastAction;
 
-    public RoomModified(){
+    public TaxiDeleted(){
         super();
     }
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getTaxiId() {
+        return taxiId;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setTaxiId(Long taxiId) {
+        this.taxiId = taxiId;
     }
     public String getStatus() {
         return status;

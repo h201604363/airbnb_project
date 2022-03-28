@@ -1,23 +1,20 @@
-package airbnb;
 
-public class RoomRegistered extends AbstractEvent {
+package uber;
 
-    private Long roomId;
+public class TaxiReserved extends AbstractEvent {
+
+    private Long taxiId;
     private String status;
     private String desc;
     private Long reviewCnt;
     private String lastAction;
 
-    public RoomRegistered(){
-        super();
+    public Long getTaxiId() {
+        return taxiId;
     }
 
-    public Long getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setTaxiId(Long taxiId) {
+        this.taxiId = taxiId;
     }
     public String getStatus() {
         return status;
@@ -48,3 +45,4 @@ public class RoomRegistered extends AbstractEvent {
         this.lastAction = lastAction;
     }
 }
+

@@ -25,10 +25,10 @@ spring:
       bindings:
         event-in:
           group: viewpage
-          destination: airbnb
+          destination: uber
           contentType: application/json
         event-out:
-          destination: airbnb
+          destination: uber
           contentType: application/json
 
 logging:
