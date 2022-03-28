@@ -61,14 +61,14 @@ public class PolicyHandler{
     private void updateResvationStatus(long rsvId, String status, long payId)     {
 
         //////////////////////////////////////////////
-        // roomId 룸 데이터의 status, lastAction 수정
+        // taxiId 택시 데이터의 status, lastAction 수정
         //////////////////////////////////////////////
 
-        // Room 테이블에서 roomId의 Data 조회 -> room
+        // Taxi 테이블에서 taxiId Data 조회 -> room
         Optional<Reservation> res = reservationRepository.findById(rsvId);
         Reservation reservation = res.get();
 
-        // room 값 수정
+        // taxi 값 수정
         reservation.setStatus(status); // status 수정 
         reservation.setPayId(payId); // payId 수정
 

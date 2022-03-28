@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name="Room", url="${prop.room.url}")
+@FeignClient(name="Taxi", url="${prop.taxi.url}")
 public interface RoomService {
 
     @RequestMapping(method= RequestMethod.GET, path="/check/chkAndReqReserve")
-    public boolean chkAndReqReserve(@RequestParam("roomId") long roomId);
+    public boolean chkAndReqReserve(@RequestParam("taxiId") long roomId);
 
 }
