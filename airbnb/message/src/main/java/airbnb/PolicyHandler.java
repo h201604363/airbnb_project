@@ -32,7 +32,7 @@ public class PolicyHandler{
 
             // roomId 추출
             long roomId = reservationConfirmed.getRoomId(); // 예약 확정된 RoomId
-            String msgString = "예약이 완료 되었습니다. 방 번호 : [" + roomId +"]";
+            String msgString = "예약이 완료 되었습니다. 택시 번호 : [" + roomId +"]";
 
             // 메시지 전송
             sendMsg(roomId, msgString);
