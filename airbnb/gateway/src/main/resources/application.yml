@@ -12,10 +12,10 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/payments/** 
-        - id: room
+        - id: taxi
           uri: http://localhost:8082
           predicates:
-            - Path=/rooms/**, /reviews/**, /check/**
+            - Path=/taix/**, /reviews/**, /check/**
         - id: reservation
           uri: http://localhost:8083
           predicates:
@@ -27,7 +27,7 @@ spring:
         - id: viewpage
           uri: http://localhost:8085
           predicates:
-            - Path= /roomviews/**
+            - Path= /taxiviews/**
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -51,10 +51,10 @@ spring:
           uri: http://payment:8080
           predicates:
             - Path=/payments/** 
-        - id: room
-          uri: http://room:8080
+        - id: taxi
+          uri: http://taxi:8080
           predicates:
-            - Path=/rooms/**, /reviews/**, /check/**
+            - Path=/taxis/**, /reviews/**, /check/**
         - id: reservation
           uri: http://reservation:8080
           predicates:
@@ -66,7 +66,7 @@ spring:
         - id: viewpage
           uri: http://viewpage:8080
           predicates:
-            - Path= /roomviews/**
+            - Path= /taxiviews/**
       globalcors:
         corsConfigurations:
           '[/**]':
