@@ -57,8 +57,8 @@ spring:
       bindings:
         event-in:
           group: payment
-          destination: airbnb
+          destination: uber
           contentType: application/json
         event-out:
-          destination: airbnb
+          destination: uber
           contentType: application/json
