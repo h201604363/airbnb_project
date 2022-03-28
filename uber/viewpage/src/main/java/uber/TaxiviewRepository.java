@@ -5,9 +5,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface TaxiviewRepository extends CrudRepository<Roomview, Long> {
+public interface TaxiviewRepository extends CrudRepository<Taxiview, Long> {
 
-    List<Roomview> findByRsvId(Long rsvId);
-    List<Roomview> findByPayId(Long payId);
+    List<Taxiview> findByRsvId(Long rsvId);
+    List<Taxiview> findByPayId(Long payId);
 
 }

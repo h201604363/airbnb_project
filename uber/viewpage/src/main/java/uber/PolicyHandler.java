@@ -1,6 +1,6 @@
-package airbnb;
+package uber;
 
-import airbnb.config.kafka.KafkaProcessor;
+import uber.config.kafka.KafkaProcessor;
 //import com.fasterxml.jackson.databind.DeserializationFeature;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import org.springframework.beans.factory.annotation.Autowired;
