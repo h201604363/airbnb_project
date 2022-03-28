@@ -61,10 +61,10 @@ spring:
       bindings:
         event-in:
           group: reservation
-          destination: airbnb
+          destination: uber
           contentType: application/json
         event-out:
-          destination: airbnb
+          destination: uber
           contentType: application/json
 prop:
   taxi:
