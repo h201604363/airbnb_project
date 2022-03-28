@@ -14,7 +14,7 @@ public class TaxiReserved extends AbstractEvent {
     }
 
     public void setTaxiId(Long taxiId) {
-        this.taxiId = rotaxiIdomId;
+        this.taxiId = taxiId;
     }
     public String getStatus() {
         return status;
