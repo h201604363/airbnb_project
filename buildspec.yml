@@ -94,26 +94,6 @@ phases:
       - kubectl config set-context default --cluster=k8s --user=admin
       - kubectl config use-context default
 
-      - istioctl kube-inject -f uber/gateway/kubernetes/deployment.yml | kubectl apply -f -n uber
-      - istioctl kube-inject -f uber/gateway/kubernetes/service.yaml | kubectl apply -f -n uber
-
-      - istioctl kube-inject -f uber/message/kubernetes/deployment.yml | kubectl apply -f -n uber
-      - istioctl kube-inject -f uber/message/kubernetes/service.yaml | kubectl apply -f -n uber
-
-      - istioctl kube-inject -f uber/taxi/kubernetes/deployment.yml | kubectl apply -f -n uber
-      - istioctl kube-inject -f uber/taxi/kubernetes/service.yaml | kubectl apply -f -n uber
-
-      - istioctl kube-inject -f uber/payment/kubernetes/deployment.yml | kubectl apply -f  -n uber
-      - istioctl kube-inject -f uber/payment/kubernetes/service.yaml | kubectl apply -f -n uber
-
-      - istioctl kube-inject -f uber/reservation/kubernetes/deployment.yml | kubectl apply -f -n uber
-      - istioctl kube-inject -f uber/reservation/kubernetes/service.yaml | kubectl apply -f -n uber
-
-      - istioctl kube-inject -f uber/viewpage/kubernetes/deployment.yml | kubectl apply -f  -n uber
-      - istioctl kube-inject -f uber/viewpage/kubernetes/service.yaml | kubectl apply -f -n uber
-
-      - istioctl kube-inject -f uber/deployall.yml | kubectl apply -f -n uber
- 
 #cache:
 #  paths:
 #    - '/root/.m2/**/*' 
