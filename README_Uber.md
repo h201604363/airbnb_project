@@ -690,7 +690,7 @@ buildspec.yml 파일
 codebuild 프로젝트 및 빌드 이력
 ```
 ![codebuild 성공 이미지](https://user-images.githubusercontent.com/74287598/160546509-70f6379a-4778-425e-9c42-6fdfb8c36036.JPG)
-![codebuild(로그)](https://user-images.githubusercontent.com/38099203/119283850-30c1bd00-bc79-11eb-9547-1ff1f62e48a4.PNG)
+![codebuild 로고](https://user-images.githubusercontent.com/74287598/160546793-291fc1fd-a743-4be0-bddf-ebf9eb089472.JPG)
 
 - codebuild 빌드 내역 (Message 서비스 세부)
 
