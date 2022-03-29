@@ -218,10 +218,11 @@ AirBnB 커버하기
 
   ![image](https://user-images.githubusercontent.com/77129832/119319352-4b198c00-bcb5-11eb-93bc-ff0657feeb9f.png)
 - viewpage MSA ViewHandler 를 통해 구현 ("RoomRegistered" 이벤트 발생 시, Pub/Sub 기반으로 별도 Roomview 테이블에 저장)
-  ![image](https://user-images.githubusercontent.com/77129832/119321162-4d7ce580-bcb7-11eb-9030-29ee6272c40d.png)
-  ![image](https://user-images.githubusercontent.com/31723044/119350185-fccab400-bcd9-11eb-8269-61868de41cc7.png)
+- ![image](https://user-images.githubusercontent.com/102494592/160531531-faa1b42a-e4e1-4604-9b79-d51f99a083a9.png)
+  ![image](https://user-images.githubusercontent.com/102494592/160531597-9262d952-856e-425c-8874-de5cb6b3fb7e.png)
+  
 - 실제로 view 페이지를 조회해 보면 모든 room에 대한 전반적인 예약 상태, 결제 상태, 리뷰 건수 등의 정보를 종합적으로 알 수 있다
-  ![image](https://user-images.githubusercontent.com/31723044/119357063-1b34ad80-bce2-11eb-94fb-a587261ab56f.png)
+  ![image](https://user-images.githubusercontent.com/102494592/160531636-b53a7194-88e0-4f72-9a4a-60408d71ef31.png)
 
 
 ## API 게이트웨이
@@ -230,40 +231,40 @@ AirBnB 커버하기
           - application.yaml 예시
             ```
             spring:
-              profiles: docker
-              cloud:
-                gateway:
-                  routes:
-                    - id: payment
-                      uri: http://payment:8080
-                      predicates:
-                        - Path=/payments/** 
-                    - id: room
-                      uri: http://room:8080
-                      predicates:
-                        - Path=/rooms/**, /reviews/**, /check/**
-                    - id: reservation
-                      uri: http://reservation:8080
-                      predicates:
-                        - Path=/reservations/**
-                    - id: message
-                      uri: http://message:8080
-                      predicates:
-                        - Path=/messages/** 
-                    - id: viewpage
-                      uri: http://viewpage:8080
-                      predicates:
-                        - Path= /roomviews/**
-                  globalcors:
-                    corsConfigurations:
-                      '[/**]':
-                        allowedOrigins:
-                          - "*"
-                        allowedMethods:
-                          - "*"
-                        allowedHeaders:
-                          - "*"
-                        allowCredentials: true
+		  profiles: docker
+		  cloud:
+		    gateway:
+		      routes:
+			- id: payment
+			  uri: http://payment:8080
+			  predicates:
+			    - Path=/payments/** 
+			- id: taxi
+			  uri: http://taxi:8080
+			  predicates:
+			    - Path=/taxis/**, /reviews/**, /check/**
+			- id: reservation
+			  uri: http://reservation:8080
+			  predicates:
+			    - Path=/reservations/**
+			- id: message
+			  uri: http://message:8080
+			  predicates:
+			    - Path=/messages/** 
+			- id: viewpage
+			  uri: http://viewpage:8080
+			  predicates:
+			    - Path= /taxiviews/**
+		      globalcors:
+			corsConfigurations:
+			  '[/**]':
+			    allowedOrigins:
+			      - "*"
+			    allowedMethods:
+			      - "*"
+			    allowedHeaders:
+			      - "*"
+			    allowCredentials: true
 
             server:
               port: 8080            
@@ -276,27 +277,27 @@ AirBnB 커버하기
 
             ```
             apiVersion: apps/v1
-            kind: Deployment
-            metadata:
-              name: gateway
-              namespace: airbnb
-              labels:
-                app: gateway
-            spec:
-              replicas: 1
-              selector:
-                matchLabels:
-                  app: gateway
-              template:
-                metadata:
-                  labels:
-                    app: gateway
-                spec:
-                  containers:
-                    - name: gateway
-                      image: 247785678011.dkr.ecr.us-east-2.amazonaws.com/gateway:1.0
-                      ports:
-                        - containerPort: 8080
+		kind: Deployment
+		metadata:
+		  name: gateway
+		  namespace: uber
+		  labels:
+		    app: gateway
+		spec:
+		  replicas: 1
+		  selector:
+		    matchLabels:
+		      app: gateway
+		  template:
+		    metadata:
+		      labels:
+			app: gateway
+		    spec:
+		      containers:
+			- name: gateway
+			  image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-gateway:v1
+			  ports:
+			    - containerPort: 8080
             ```               
             
 
@@ -314,20 +315,20 @@ AirBnB 커버하기
           
             ```
             apiVersion: v1
-              kind: Service
-              metadata:
-                name: gateway
-                namespace: airbnb
-                labels:
-                  app: gateway
-              spec:
-                ports:
-                  - port: 8080
-                    targetPort: 8080
-                selector:
-                  app: gateway
-                type:
-                  LoadBalancer           
+		kind: Service
+		metadata:
+		  name: gateway
+		  namespace: uber
+		  labels:
+		    app: gateway
+		spec:
+		  ports:
+		    - port: 8080
+		      targetPort: 8080
+		  selector:
+		    app: gateway
+		  type:
+		    LoadBalancer         
             ```             
 
            
@@ -356,22 +357,28 @@ Airbnb 프로젝트에서는 PolicyHandler에서 처리 시 어떤 건에 대한
 예약건의 취소를 수행하면 다시 연관된 방(Room), 결제(Payment) 등의 서비스의 상태값 등의 데이터가 적당한 상태로 변경되는 것을
 확인할 수 있습니다.
 
-예약등록
-![image](https://user-images.githubusercontent.com/31723044/119320227-54572880-bcb6-11eb-973b-a9a5cd1f7e21.png)
-예약 후 - 방 상태
-![image](https://user-images.githubusercontent.com/31723044/119320300-689b2580-bcb6-11eb-933e-98be5aadca61.png)
+택시등록
+![image](https://user-images.githubusercontent.com/102494592/160531838-56e9b867-182c-4e5a-921c-35e589b8d149.png)
+
+예약 후 - 택시 상태
+
 예약 후 - 예약 상태
-![image](https://user-images.githubusercontent.com/31723044/119320390-810b4000-bcb6-11eb-8c62-48f6765c570a.png)
+![image](https://user-images.githubusercontent.com/102494592/160532422-afc7dc8d-9168-40e9-a652-23e465284303.png)
+
 예약 후 - 결제 상태
-![image](https://user-images.githubusercontent.com/31723044/119320524-a39d5900-bcb6-11eb-864b-173711eb9e94.png)
+![image](https://user-images.githubusercontent.com/102494592/160531870-9a03b8d5-e54d-4c96-8d17-419046a1212a.png)
+
 예약 취소
-![image](https://user-images.githubusercontent.com/31723044/119320595-b6b02900-bcb6-11eb-8d8d-0d5c59603c72.png)
-취소 후 - 방 상태
-![image](https://user-images.githubusercontent.com/31723044/119320680-ccbde980-bcb6-11eb-8b7c-66315329aafe.png)
+![image](https://user-images.githubusercontent.com/102494592/160532226-dfe5e819-2b16-4ac0-8c54-2a3668ed0139.png)
+
+취소 후 - 택시 상태
+![image](https://user-images.githubusercontent.com/102494592/160531923-f9a38614-5b68-4df9-be2d-5a4d2a900473.png)
+
 취소 후 - 예약 상태
-![image](https://user-images.githubusercontent.com/31723044/119320747-dcd5c900-bcb6-11eb-9c44-fd3781c7c55f.png)
+![image](https://user-images.githubusercontent.com/102494592/160531967-9895992b-f8d4-4545-b429-fc7eaab1bfe4.png)
+
 취소 후 - 결제 상태
-![image](https://user-images.githubusercontent.com/31723044/119320806-ee1ed580-bcb6-11eb-8ccf-8c81385cc8ba.png)
+![image](https://user-images.githubusercontent.com/102494592/160531980-781e4dcb-32b2-4857-a844-443a68369720.png)
 
 
 ## DDD 의 적용
