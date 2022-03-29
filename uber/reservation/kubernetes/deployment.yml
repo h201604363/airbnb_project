@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: reservation
-          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-reservation:latest
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-reservation
           ports:
             - containerPort: 8080
           readinessProbe:
