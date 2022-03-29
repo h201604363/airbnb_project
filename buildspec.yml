@@ -94,7 +94,7 @@ phases:
       - kubectl config set-context default --cluster=k8s --user=admin
       - kubectl config use-context default
 
-      - kubectl apply -f <(istioctl kube-inject -f uber/gateway/kubernetes/deployment.yml) -n uber
+      - kubectl apply -f < (istioctl kube-inject -f uber/gateway/kubernetes/deployment.yml) -n uber
       - kubectl apply -f <(istioctl kube-inject -f uber/gateway/kubernetes/service.yaml) -n uber
 
       - kubectl apply -f <(istioctl kube-inject -f uber/message/kubernetes/deployment.yml) -n uber
