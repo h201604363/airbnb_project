@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: viewpage
-          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-viewpage:v1
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-viewpage:latest
           ports:
             - containerPort: 8080
           readinessProbe:

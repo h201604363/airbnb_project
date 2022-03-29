@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: message
-          image: 052937454741.dkr.ecr.ap-northeast-2.amazonaws.com/user05-message:1.0
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-message:latest
           ports:
             - containerPort: 8080
           readinessProbe:
