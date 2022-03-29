@@ -358,28 +358,26 @@ Airbnb 프로젝트에서는 PolicyHandler에서 처리 시 어떤 건에 대한
 확인할 수 있습니다.
 
 택시등록
-
 ![image](https://user-images.githubusercontent.com/102494592/160531838-56e9b867-182c-4e5a-921c-35e589b8d149.png)
 
-예약 후 - 방 상태
-![image](https://user-images.githubusercontent.com/31723044/119320300-689b2580-bcb6-11eb-933e-98be5aadca61.png)
+예약 후 - 택시 상태
+
 예약 후 - 예약 상태
-![image](https://user-images.githubusercontent.com/31723044/119320390-810b4000-bcb6-11eb-8c62-48f6765c570a.png)
+![image](https://user-images.githubusercontent.com/102494592/160532422-afc7dc8d-9168-40e9-a652-23e465284303.png)
+
 예약 후 - 결제 상태
 ![image](https://user-images.githubusercontent.com/102494592/160531870-9a03b8d5-e54d-4c96-8d17-419046a1212a.png)
+
 예약 취소
 ![image](https://user-images.githubusercontent.com/102494592/160532226-dfe5e819-2b16-4ac0-8c54-2a3668ed0139.png)
 
-취소 후 - 방 상태
-
+취소 후 - 택시 상태
 ![image](https://user-images.githubusercontent.com/102494592/160531923-f9a38614-5b68-4df9-be2d-5a4d2a900473.png)
 
 취소 후 - 예약 상태
-
 ![image](https://user-images.githubusercontent.com/102494592/160531967-9895992b-f8d4-4545-b429-fc7eaab1bfe4.png)
 
 취소 후 - 결제 상태
-
 ![image](https://user-images.githubusercontent.com/102494592/160531980-781e4dcb-32b2-4857-a844-443a68369720.png)
 
 
