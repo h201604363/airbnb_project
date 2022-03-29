@@ -216,7 +216,7 @@ Uber 커버하기
 - 비동기식으로 처리되어 발행된 이벤트 기반 Kafka 를 통해 수신/처리 되어 별도 Table 에 관리한다
 - Table 모델링 (TAXIVIEW)
 
-  ![image](https://user-images.githubusercontent.com/77129832/119319352-4b198c00-bcb5-11eb-93bc-ff0657feeb9f.png)
+  ![image](https://user-images.githubusercontent.com/102494592/160553145-4f91059e-f72c-4b60-b65a-83e513f426bd.png)
 - viewpage MSA ViewHandler 를 통해 구현 ("TaxiRegistered" 이벤트 발생 시, Pub/Sub 기반으로 별도 Roomview 테이블에 저장)
 - ![image](https://user-images.githubusercontent.com/102494592/160531531-faa1b42a-e4e1-4604-9b79-d51f99a083a9.png)
   ![image](https://user-images.githubusercontent.com/102494592/160531597-9262d952-856e-425c-8874-de5cb6b3fb7e.png)
