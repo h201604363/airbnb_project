@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/15603058/119284989-fefe2580-bc7b-11eb-99ca-7a9e4183c16f.jpg)
+![uber-logo-1647260943](https://user-images.githubusercontent.com/74287598/160545865-86204642-c279-4358-8bf5-35f5274857ef.png)
 
 # 택시예약(Taxi)
 
