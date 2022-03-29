@@ -1,6 +1,4 @@
-<img src="https://user-images.githubusercontent.com/74287598/160545865-86204642-c279-4358-8bf5-35f5274857ef.pngG"  width="700" height="370">
-
-출처: https://cutemoomin.tistory.com/entry/Readme-파일에-이미지-넣기-마크다운-이미지 [무민은귀여워]
+![uber-logo-1647260943](https://user-images.githubusercontent.com/74287598/160546348-171cc839-5200-4a36-a9fa-9fbd1c882afd.png)
 
 # 택시예약(Taxi)
 
@@ -683,15 +681,15 @@ kubectl -n kube-system describe secret eks-admin-token-rjpmq
 ![codebuild(token)](https://user-images.githubusercontent.com/38099203/119293511-84d69c80-bc8d-11eb-99c7-e8929e6a41e4.PNG)
 ```
 buildspec.yml 파일 
-마이크로 서비스 room의 yml 파일 이용하도록 세팅
+마이크로 서비스 taxi의 yml 파일 이용하도록 세팅
 ```
-![codebuild(buildspec)](https://user-images.githubusercontent.com/38099203/119283849-30292680-bc79-11eb-9f86-cbb715e74846.PNG)
+![buildspec_yml](https://user-images.githubusercontent.com/74287598/160546460-e598811f-ed32-4533-b8a0-8e3f2ce0b63c.JPG)
 
 - codebuild 실행
 ```
 codebuild 프로젝트 및 빌드 이력
 ```
-![codebuild(프로젝트)](https://user-images.githubusercontent.com/38099203/119283851-315a5380-bc79-11eb-9b2a-b4522d22d009.PNG)
+![codebuild 성공 이미지](https://user-images.githubusercontent.com/74287598/160546509-70f6379a-4778-425e-9c42-6fdfb8c36036.JPG)
 ![codebuild(로그)](https://user-images.githubusercontent.com/38099203/119283850-30c1bd00-bc79-11eb-9547-1ff1f62e48a4.PNG)
 
 - codebuild 빌드 내역 (Message 서비스 세부)
