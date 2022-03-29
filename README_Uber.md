@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/15603058/119284989-fefe2580-bc7b-11eb-99ca-7a9e4183c16f.jpg)
+![uber-logo-1647260943](https://user-images.githubusercontent.com/74287598/160546348-171cc839-5200-4a36-a9fa-9fbd1c882afd.png)
 
 # 택시예약(Taxi)
 
@@ -9,7 +9,7 @@
 
 # Table of contents
 
-- [예제 - 숙소예약](#---)
+- [예제 - 택시예약](#---)
   - [서비스 시나리오](#서비스-시나리오)
   - [체크포인트](#체크포인트)
   - [분석/설계](#분석설계)
@@ -28,7 +28,7 @@
 
 # 서비스 시나리오
 
-AirBnB 커버하기
+Uber 커버하기
 
 기능적 요구사항
 1. 택시기사가 사용할 택시를 등록/수정/삭제한다.
@@ -44,7 +44,7 @@ AirBnB 커버하기
 1. 트랜잭션
     1. 결제가 되지 않은 예약 건은 성립되지 않아야 한다.  (Sync 호출)
 1. 장애격리
-    1. 숙소 등록 및 메시지 전송 기능이 수행되지 않더라도 예약은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
+    1. 택시 등록 및 메시지 전송 기능이 수행되지 않더라도 예약은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
     1. 예약 시스템이 과중되면 사용자를 잠시동안 받지 않고 잠시 후에 하도록 유도한다  Circuit breaker, fallback
 1. 성능
     1. 모든 방에 대한 정보 및 예약 상태 등을 한번에 확인할 수 있어야 한다  (CQRS)
@@ -144,7 +144,7 @@ AirBnB 커버하기
 ![image](https://user-images.githubusercontent.com/15603058/119300858-6c21b300-bc9c-11eb-9b3f-c85aff51658f.png)
 
     - 도메인 서열 분리 
-        - Core Domain:  reservation, room : 없어서는 안될 핵심 서비스이며, 연간 Up-time SLA 수준을 99.999% 목표, 배포주기는 reservation 의 경우 1주일 1회 미만, room 의 경우 1개월 1회 미만
+        - Core Domain:  reservation, taxi : 없어서는 안될 핵심 서비스이며, 연간 Up-time SLA 수준을 99.999% 목표, 배포주기는 reservation 의 경우 1주일 1회 미만, room 의 경우 1개월 1회 미만
         - Supporting Domain:   message, viewpage : 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
         - General Domain:   payment : 결제서비스로 3rd Party 외부 서비스를 사용하는 것이 경쟁력이 높음 
 
@@ -166,14 +166,14 @@ AirBnB 커버하기
 
 ![image](https://user-images.githubusercontent.com/15603058/119306321-f110ca80-bca4-11eb-804c-a965220bad61.png)
 
-    - 호스트가 임대할 숙소를 등록/수정/삭제한다.(ok)
-    - 고객이 숙소를 선택하여 예약한다.(ok)
+    - 택시기사가 임대할 택시를 등록/수정/삭제한다.(ok)
+    - 고객이 택시를 선택하여 예약한다.(ok)
     - 예약과 동시에 결제가 진행된다.(ok)
     - 예약이 되면 예약 내역(Message)이 전달된다.(?)
     - 고객이 예약을 취소할 수 있다.(ok)
     - 예약 사항이 취소될 경우 취소 내역(Message)이 전달된다.(?)
-    - 숙소에 후기(review)를 남길 수 있다.(ok)
-    - 전체적인 숙소에 대한 정보 및 예약 상태 등을 한 화면에서 확인 할 수 있다.(View-green Sticker 추가로 ok)
+    - 택시에 후기(review)를 남길 수 있다.(ok)
+    - 전체적인 택시에 대한 정보 및 예약 상태 등을 한 화면에서 확인 할 수 있다.(View-green Sticker 추가로 ok)
     
 ### 모델 수정
 
@@ -211,17 +211,18 @@ AirBnB 커버하기
 
 ## CQRS
 
-숙소(Room) 의 사용가능 여부, 리뷰 및 예약/결재 등 총 Status 에 대하여 고객(Customer)이 조회 할 수 있도록 CQRS 로 구현하였다.
-- room, review, reservation, payment 개별 Aggregate Status 를 통합 조회하여 성능 Issue 를 사전에 예방할 수 있다.
+택시(Taxi) 의 사용가능 여부, 리뷰 및 예약/결재 등 총 Status 에 대하여 고객(Customer)이 조회 할 수 있도록 CQRS 로 구현하였다.
+- taxi, review, reservation, payment 개별 Aggregate Status 를 통합 조회하여 성능 Issue 를 사전에 예방할 수 있다.
 - 비동기식으로 처리되어 발행된 이벤트 기반 Kafka 를 통해 수신/처리 되어 별도 Table 에 관리한다
-- Table 모델링 (ROOMVIEW)
+- Table 모델링 (TAXIVIEW)
 
   ![image](https://user-images.githubusercontent.com/77129832/119319352-4b198c00-bcb5-11eb-93bc-ff0657feeb9f.png)
-- viewpage MSA ViewHandler 를 통해 구현 ("RoomRegistered" 이벤트 발생 시, Pub/Sub 기반으로 별도 Roomview 테이블에 저장)
-  ![image](https://user-images.githubusercontent.com/77129832/119321162-4d7ce580-bcb7-11eb-9030-29ee6272c40d.png)
-  ![image](https://user-images.githubusercontent.com/31723044/119350185-fccab400-bcd9-11eb-8269-61868de41cc7.png)
-- 실제로 view 페이지를 조회해 보면 모든 room에 대한 전반적인 예약 상태, 결제 상태, 리뷰 건수 등의 정보를 종합적으로 알 수 있다
-  ![image](https://user-images.githubusercontent.com/31723044/119357063-1b34ad80-bce2-11eb-94fb-a587261ab56f.png)
+- viewpage MSA ViewHandler 를 통해 구현 ("TaxiRegistered" 이벤트 발생 시, Pub/Sub 기반으로 별도 Roomview 테이블에 저장)
+- ![image](https://user-images.githubusercontent.com/102494592/160531531-faa1b42a-e4e1-4604-9b79-d51f99a083a9.png)
+  ![image](https://user-images.githubusercontent.com/102494592/160531597-9262d952-856e-425c-8874-de5cb6b3fb7e.png)
+  
+- 실제로 view 페이지를 조회해 보면 모든 taxi에 대한 전반적인 예약 상태, 결제 상태, 리뷰 건수 등의 정보를 종합적으로 알 수 있다
+  ![image](https://user-images.githubusercontent.com/102494592/160531636-b53a7194-88e0-4f72-9a4a-60408d71ef31.png)
 
 
 ## API 게이트웨이
@@ -230,40 +231,40 @@ AirBnB 커버하기
           - application.yaml 예시
             ```
             spring:
-              profiles: docker
-              cloud:
-                gateway:
-                  routes:
-                    - id: payment
-                      uri: http://payment:8080
-                      predicates:
-                        - Path=/payments/** 
-                    - id: room
-                      uri: http://room:8080
-                      predicates:
-                        - Path=/rooms/**, /reviews/**, /check/**
-                    - id: reservation
-                      uri: http://reservation:8080
-                      predicates:
-                        - Path=/reservations/**
-                    - id: message
-                      uri: http://message:8080
-                      predicates:
-                        - Path=/messages/** 
-                    - id: viewpage
-                      uri: http://viewpage:8080
-                      predicates:
-                        - Path= /roomviews/**
-                  globalcors:
-                    corsConfigurations:
-                      '[/**]':
-                        allowedOrigins:
-                          - "*"
-                        allowedMethods:
-                          - "*"
-                        allowedHeaders:
-                          - "*"
-                        allowCredentials: true
+		  profiles: docker
+		  cloud:
+		    gateway:
+		      routes:
+			- id: payment
+			  uri: http://payment:8080
+			  predicates:
+			    - Path=/payments/** 
+			- id: taxi
+			  uri: http://taxi:8080
+			  predicates:
+			    - Path=/taxis/**, /reviews/**, /check/**
+			- id: reservation
+			  uri: http://reservation:8080
+			  predicates:
+			    - Path=/reservations/**
+			- id: message
+			  uri: http://message:8080
+			  predicates:
+			    - Path=/messages/** 
+			- id: viewpage
+			  uri: http://viewpage:8080
+			  predicates:
+			    - Path= /taxiviews/**
+		      globalcors:
+			corsConfigurations:
+			  '[/**]':
+			    allowedOrigins:
+			      - "*"
+			    allowedMethods:
+			      - "*"
+			    allowedHeaders:
+			      - "*"
+			    allowCredentials: true
 
             server:
               port: 8080            
@@ -276,27 +277,27 @@ AirBnB 커버하기
 
             ```
             apiVersion: apps/v1
-            kind: Deployment
-            metadata:
-              name: gateway
-              namespace: airbnb
-              labels:
-                app: gateway
-            spec:
-              replicas: 1
-              selector:
-                matchLabels:
-                  app: gateway
-              template:
-                metadata:
-                  labels:
-                    app: gateway
-                spec:
-                  containers:
-                    - name: gateway
-                      image: 247785678011.dkr.ecr.us-east-2.amazonaws.com/gateway:1.0
-                      ports:
-                        - containerPort: 8080
+		kind: Deployment
+		metadata:
+		  name: gateway
+		  namespace: uber
+		  labels:
+		    app: gateway
+		spec:
+		  replicas: 1
+		  selector:
+		    matchLabels:
+		      app: gateway
+		  template:
+		    metadata:
+		      labels:
+			app: gateway
+		    spec:
+		      containers:
+			- name: gateway
+			  image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-gateway:v1
+			  ports:
+			    - containerPort: 8080
             ```               
             
 
@@ -314,20 +315,20 @@ AirBnB 커버하기
           
             ```
             apiVersion: v1
-              kind: Service
-              metadata:
-                name: gateway
-                namespace: airbnb
-                labels:
-                  app: gateway
-              spec:
-                ports:
-                  - port: 8080
-                    targetPort: 8080
-                selector:
-                  app: gateway
-                type:
-                  LoadBalancer           
+		kind: Service
+		metadata:
+		  name: gateway
+		  namespace: uber
+		  labels:
+		    app: gateway
+		spec:
+		  ports:
+		    - port: 8080
+		      targetPort: 8080
+		  selector:
+		    app: gateway
+		  type:
+		    LoadBalancer         
             ```             
 
            
@@ -341,67 +342,73 @@ AirBnB 커버하기
            
             ```
             Service  및 엔드포인트 확인 
-            kubectl get svc -n airbnb           
+            kubectl get svc -n uber           
             ```                 
 ![image](https://user-images.githubusercontent.com/80744273/119318358-2a046b80-bcb4-11eb-9d46-ef2d498c2cff.png)
 
 # Correlation
 
-Airbnb 프로젝트에서는 PolicyHandler에서 처리 시 어떤 건에 대한 처리인지를 구별하기 위한 Correlation-key 구현을 
+Uber 프로젝트에서는 PolicyHandler에서 처리 시 어떤 건에 대한 처리인지를 구별하기 위한 Correlation-key 구현을 
 이벤트 클래스 안의 변수로 전달받아 서비스간 연관된 처리를 정확하게 구현하고 있습니다. 
 
 아래의 구현 예제를 보면
 
-예약(Reservation)을 하면 동시에 연관된 방(Room), 결제(Payment) 등의 서비스의 상태가 적당하게 변경이 되고,
-예약건의 취소를 수행하면 다시 연관된 방(Room), 결제(Payment) 등의 서비스의 상태값 등의 데이터가 적당한 상태로 변경되는 것을
+예약(Reservation)을 하면 동시에 연관된 택시(Taxi), 결제(Payment) 등의 서비스의 상태가 적당하게 변경이 되고,
+예약건의 취소를 수행하면 다시 연관된 택시(Taxi), 결제(Payment) 등의 서비스의 상태값 등의 데이터가 적당한 상태로 변경되는 것을
 확인할 수 있습니다.
 
-예약등록
-![image](https://user-images.githubusercontent.com/31723044/119320227-54572880-bcb6-11eb-973b-a9a5cd1f7e21.png)
-예약 후 - 방 상태
-![image](https://user-images.githubusercontent.com/31723044/119320300-689b2580-bcb6-11eb-933e-98be5aadca61.png)
+택시등록
+![image](https://user-images.githubusercontent.com/102494592/160531838-56e9b867-182c-4e5a-921c-35e589b8d149.png)
+
+예약 후 - 택시 상태
+
 예약 후 - 예약 상태
-![image](https://user-images.githubusercontent.com/31723044/119320390-810b4000-bcb6-11eb-8c62-48f6765c570a.png)
+![image](https://user-images.githubusercontent.com/102494592/160532422-afc7dc8d-9168-40e9-a652-23e465284303.png)
+
 예약 후 - 결제 상태
-![image](https://user-images.githubusercontent.com/31723044/119320524-a39d5900-bcb6-11eb-864b-173711eb9e94.png)
+![image](https://user-images.githubusercontent.com/102494592/160531870-9a03b8d5-e54d-4c96-8d17-419046a1212a.png)
+
 예약 취소
-![image](https://user-images.githubusercontent.com/31723044/119320595-b6b02900-bcb6-11eb-8d8d-0d5c59603c72.png)
-취소 후 - 방 상태
-![image](https://user-images.githubusercontent.com/31723044/119320680-ccbde980-bcb6-11eb-8b7c-66315329aafe.png)
+![image](https://user-images.githubusercontent.com/102494592/160532226-dfe5e819-2b16-4ac0-8c54-2a3668ed0139.png)
+
+취소 후 - 택시 상태
+![image](https://user-images.githubusercontent.com/102494592/160531923-f9a38614-5b68-4df9-be2d-5a4d2a900473.png)
+
 취소 후 - 예약 상태
-![image](https://user-images.githubusercontent.com/31723044/119320747-dcd5c900-bcb6-11eb-9c44-fd3781c7c55f.png)
+![image](https://user-images.githubusercontent.com/102494592/160531967-9895992b-f8d4-4545-b429-fc7eaab1bfe4.png)
+
 취소 후 - 결제 상태
-![image](https://user-images.githubusercontent.com/31723044/119320806-ee1ed580-bcb6-11eb-8ccf-8c81385cc8ba.png)
+![image](https://user-images.githubusercontent.com/102494592/160531980-781e4dcb-32b2-4857-a844-443a68369720.png)
 
 
 ## DDD 의 적용
 
-- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다. (예시는 room 마이크로 서비스). 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하려고 노력했다. 현실에서 발생가는한 이벤트에 의하여 마이크로 서비스들이 상호 작용하기 좋은 모델링으로 구현을 하였다.
+- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다. (예시는 taxi 마이크로 서비스). 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하려고 노력했다. 현실에서 발생가는한 이벤트에 의하여 마이크로 서비스들이 상호 작용하기 좋은 모델링으로 구현을 하였다.
 
 ```
-package airbnb;
+package uber;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
 
 @Entity
-@Table(name="Room_table")
-public class Room {
+@Table(name="taxi_table")
+public class Taxi {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long roomId;       // 방ID
-    private String status;     // 방 상태
-    private String desc;       // 방 상세 설명
-    private Long reviewCnt;    // 리뷰 건수
-    private String lastAction; // 최종 작업
+    private Long taxiId;
+    private String status;
+    private String desc;
+    private Long reviewCnt;
+    private String lastAction;
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getTaxiId() {
+        return taxiId;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setTaxiId(Long taxiId) {
+        this.taxiId = taxiId;
     }
     public String getStatus() {
         return status;
@@ -433,23 +440,25 @@ public class Room {
     }
 }
 
+
 ```
 - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (RDB or NoSQL) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다
 ```
-package airbnb;
+package uber;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(collectionResourceRel="rooms", path="rooms")
-public interface RoomRepository extends PagingAndSortingRepository<Room, Long>{
+@RepositoryRestResource(collectionResourceRel="taxis", path="taxis")
+public interface TaxiRepository extends PagingAndSortingRepository<Taxi, Long>{
+
 
 }
 ```
 - 적용 후 REST API 의 테스트
 ```
-# room 서비스의 room 등록
-http POST http://localhost:8088/rooms desc="Beautiful House"  
+# taxi 서비스의 taxi 등록
+http POST http://localhost:8088/taxis desc="Beautiful taxi"  
 
 # reservation 서비스의 예약 요청
 http POST http://localhost:8088/reservations roomId=1 status=reqReserve
@@ -468,11 +477,11 @@ http GET http://localhost:8088/reservations
 ```
 # PaymentService.java
 
-package airbnb.external;
+package uber.external;
 
 <import문 생략>
 
-@FeignClient(name="Payment", url="${prop.room.url}")
+@FeignClient(name="Payment", url="${prop.taxi.url}")
 public interface PaymentService {
 
     @RequestMapping(method= RequestMethod.POST, path="/payments")
@@ -482,15 +491,15 @@ public interface PaymentService {
 
 # RoomService.java
 
-package airbnb.external;
+package uber.external;
 
 <import문 생략>
 
-@FeignClient(name="Room", url="${prop.room.url}")
+@FeignClient(name="Taxi", url="${prop.taxi.url}")
 public interface RoomService {
 
     @RequestMapping(method= RequestMethod.GET, path="/check/chkAndReqReserve")
-    public boolean chkAndReqReserve(@RequestParam("roomId") long roomId);
+    public boolean chkAndReqReserve(@RequestParam("taxiId") long taxiId);
 
 }
 
@@ -512,8 +521,8 @@ public interface RoomService {
         // 예약 요청(reqReserve) 들어온 경우
         ////////////////////////////////////
 
-        // 해당 ROOM이 Available한 상태인지 체크
-        boolean result = ReservationApplication.applicationContext.getBean(airbnb.external.RoomService.class)
+        // 해당 TAXI가 Available한 상태인지 체크
+        boolean result = ReservationApplication.applicationContext.getBean(uber.external.RoomService.class)
                         .chkAndReqReserve(this.getRoomId());
         System.out.println("######## Check Result : " + result);
 
@@ -524,11 +533,11 @@ public interface RoomService {
             //////////////////////////////
             // PAYMENT 결제 진행 (POST방식) - SYNC 호출
             //////////////////////////////
-            airbnb.external.Payment payment = new airbnb.external.Payment();
+            uber.external.Payment payment = new uber.external.Payment();
             payment.setRsvId(this.getRsvId());
-            payment.setRoomId(this.getRoomId());
+            payment.setTaxiId(this.getTaxiId());
             payment.setStatus("paid");
-            ReservationApplication.applicationContext.getBean(airbnb.external.PaymentService.class)
+            ReservationApplication.applicationContext.getBean(uber.external.PaymentService.class)
                 .approvePayment(payment);
 
             /////////////////////////////////////
@@ -548,14 +557,14 @@ public interface RoomService {
 # 결제 (pay) 서비스를 잠시 내려놓음 (ctrl+c)
 
 # 예약 요청
-http POST http://localhost:8088/reservations roomId=1 status=reqReserve   #Fail
+http POST http://localhost:8088/reservations taxiId=1 status=reqReserve   #Fail
 
 # 결제서비스 재기동
 cd payment
 mvn spring-boot:run
 
 # 예약 요청
-http POST http://localhost:8088/reservations roomId=1 status=reqReserve   #Success
+http POST http://localhost:8088/reservations taxiId=1 status=reqReserve   #Success
 ```
 
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
@@ -573,16 +582,16 @@ http POST http://localhost:8088/reservations roomId=1 status=reqReserve   #Succe
 ```
 # Payment.java
 
-package airbnb;
-
-import javax.persistence.*;
-import org.springframework.beans.BeanUtils;
-
 @Entity
 @Table(name="Payment_table")
 public class Payment {
 
-    ....
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long payId;
+    private Long rsvId;
+    private Long taxiId;
+    private String status;
 
     @PostPersist
     public void onPostPersist(){
@@ -594,6 +603,8 @@ public class Payment {
         PaymentApproved paymentApproved = new PaymentApproved();
         BeanUtils.copyProperties(this, paymentApproved);
         paymentApproved.publishAfterCommit();
+
+
     }
     
     ....
@@ -605,25 +616,26 @@ public class Payment {
 ```
 # Reservation.java
 
-package airbnb;
+package uber;
 
     @PostUpdate
     public void onPostUpdate(){
-    
-        ....
 
-        if(this.getStatus().equals("reserved")) {
+        ////////////////////////////////
+        // RESERVATION에 UPDATE 된 경우
+        ////////////////////////////////
+        if(this.getStatus().equals("reqCancel")) {
 
-            ////////////////////
-            // 예약 확정된 경우
-            ////////////////////
+            ///////////////////////
+            // 취소 요청 들어온 경우
+            ///////////////////////
 
-            // 이벤트 발생 --> ReservationConfirmed
-            ReservationConfirmed reservationConfirmed = new ReservationConfirmed();
-            BeanUtils.copyProperties(this, reservationConfirmed);
-            reservationConfirmed.publishAfterCommit();
+            // 이벤트 발생 --> reservationCancelRequested
+            ReservationCancelRequested reservationCancelRequested = new ReservationCancelRequested();
+            BeanUtils.copyProperties(this, reservationCancelRequested);
+            reservationCancelRequested.publishAfterCommit();
+
         }
-        
         ....
         
     }
@@ -636,7 +648,7 @@ package airbnb;
 # 메시지 서비스 (message) 를 잠시 내려놓음 (ctrl+c)
 
 # 예약 요청
-http POST http://localhost:8088/reservations roomId=1 status=reqReserve   #Success
+http POST http://localhost:8088/reservations taxiId=1 status=reqReserve   #Success
 
 # 예약 상태 확인
 http GET localhost:8088/reservations    #메시지 서비스와 상관없이 예약 상태는 정상 확인
@@ -669,24 +681,16 @@ kubectl -n kube-system describe secret eks-admin-token-rjpmq
 ![codebuild(token)](https://user-images.githubusercontent.com/38099203/119293511-84d69c80-bc8d-11eb-99c7-e8929e6a41e4.PNG)
 ```
 buildspec.yml 파일 
-마이크로 서비스 room의 yml 파일 이용하도록 세팅
+마이크로 서비스 taxi의 yml 파일 이용하도록 세팅
 ```
-![codebuild(buildspec)](https://user-images.githubusercontent.com/38099203/119283849-30292680-bc79-11eb-9f86-cbb715e74846.PNG)
+![buildspec_yml](https://user-images.githubusercontent.com/74287598/160546460-e598811f-ed32-4533-b8a0-8e3f2ce0b63c.JPG)
 
 - codebuild 실행
 ```
 codebuild 프로젝트 및 빌드 이력
 ```
-![codebuild(프로젝트)](https://user-images.githubusercontent.com/38099203/119283851-315a5380-bc79-11eb-9b2a-b4522d22d009.PNG)
-![codebuild(로그)](https://user-images.githubusercontent.com/38099203/119283850-30c1bd00-bc79-11eb-9547-1ff1f62e48a4.PNG)
-
-- codebuild 빌드 내역 (Message 서비스 세부)
-
-![image](https://user-images.githubusercontent.com/31723044/119385500-2b0fba00-bd01-11eb-861b-cc31910ff945.png)
-
-- codebuild 빌드 내역 (전체 이력 조회)
-
-![image](https://user-images.githubusercontent.com/31723044/119385401-087da100-bd01-11eb-8b69-ce222e6bb71e.png)
+![codebuild 성공 이미지](https://user-images.githubusercontent.com/74287598/160546509-70f6379a-4778-425e-9c42-6fdfb8c36036.JPG)
+![codebuild 로고](https://user-images.githubusercontent.com/74287598/160546793-291fc1fd-a743-4be0-bddf-ebf9eb089472.JPG)
 
 
 
@@ -695,7 +699,7 @@ codebuild 프로젝트 및 빌드 이력
 
 * 서킷 브레이킹 프레임워크의 선택: istio 사용하여 구현함
 
-시나리오는 예약(reservation)--> 룸(room) 시의 연결을 RESTful Request/Response 로 연동하여 구현이 되어있고, 예약 요청이 과도할 경우 CB 를 통하여 장애격리.
+시나리오는 예약(reservation)--> 택시(taxi) 시의 연결을 RESTful Request/Response 로 연동하여 구현이 되어있고, 예약 요청이 과도할 경우 CB 를 통하여 장애격리.
 
 - DestinationRule 를 생성하여 circuit break 가 발생할 수 있도록 설정
 최소 connection pool 설정
@@ -705,7 +709,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: dr-room
-  namespace: airbnb
+  namespace: uber
 spec:
   host: room
   trafficPolicy:
@@ -720,11 +724,11 @@ spec:
 #      maxEjectionPercent: 100
 ```
 
-* istio-injection 활성화 및 room pod container 확인
+* istio-injection 활성화 및 uber pod container 확인
 
 ```
 kubectl get ns -L istio-injection
-kubectl label namespace airbnb istio-injection=enabled 
+kubectl label namespace uber istio-injection=enabled 
 ```
 
 ![Circuit Breaker(istio-enjection)](https://user-images.githubusercontent.com/38099203/119295450-d6812600-bc91-11eb-8aad-46eeac968a41.PNG)
@@ -737,60 +741,60 @@ kubectl label namespace airbnb istio-injection=enabled
 siege 실행
 
 ```
-kubectl run siege --image=apexacme/siege-nginx -n airbnb
-kubectl exec -it siege -c siege -n airbnb -- /bin/bash
+kubectl run siege --image=apexacme/siege-nginx -n uber
+kubectl exec -it siege -c siege -n uber -- /bin/bash
 ```
 
 
 - 동시사용자 1로 부하 생성 시 모두 정상
 ```
-siege -c1 -t10S -v --content-type "application/json" 'http://room:8080/rooms POST {"desc": "Beautiful House3"}'
+siege -c1 -t10S -v --content-type "application/json" 'http://room:8080/taxis POST {"desc": "Beautiful Taxi3"}'
 
 ** SIEGE 4.0.4
 ** Preparing 1 concurrent users for battle.
 The server is now under siege...
-HTTP/1.1 201     0.49 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.05 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     254 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     256 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     256 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     256 bytes ==> POST http://room:8080/rooms
+HTTP/1.1 201     0.49 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.05 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     254 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     256 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     256 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     256 bytes ==> POST http://room:8080/taxis
 ```
 
 - 동시사용자 2로 부하 생성 시 503 에러 168개 발생
 ```
-siege -c2 -t10S -v --content-type "application/json" 'http://room:8080/rooms POST {"desc": "Beautiful House3"}'
+siege -c2 -t10S -v --content-type "application/json" 'http://room:8080/taxis POST {"desc": "Beautiful Taxis3"}'
 
 ** SIEGE 4.0.4
 ** Preparing 2 concurrent users for battle.
 The server is now under siege...
-HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 503     0.10 secs:      81 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.04 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.05 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.22 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.08 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.07 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 503     0.01 secs:      81 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 503     0.01 secs:      81 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 503     0.00 secs:      81 bytes ==> POST http://room:8080/rooms
+HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 503     0.10 secs:      81 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.04 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.05 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.22 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.08 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.07 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 503     0.01 secs:      81 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 503     0.01 secs:      81 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     258 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 503     0.00 secs:      81 bytes ==> POST http://room:8080/taxis
 
 Lifting the server siege...
 Transactions:                   1904 hits
@@ -818,22 +822,22 @@ Shortest transaction:           0.00
 ** SIEGE 4.0.4
 ** Preparing 1 concurrent users for battle.
 The server is now under siege...
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.00 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.00 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.00 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.00 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.00 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.00 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
 
 :
 :
@@ -866,17 +870,17 @@ Shortest transaction:           0.00
 
 - room 서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 50프로를 넘어서면 replica 를 10개까지 늘려준다:
 ```
-kubectl autoscale deployment room -n airbnb --cpu-percent=50 --min=1 --max=10
+kubectl autoscale deployment room -n uber --cpu-percent=50 --min=1 --max=10
 ```
 ![Autoscale (HPA)(kubectl autoscale 명령어)](https://user-images.githubusercontent.com/38099203/119299474-ec92e480-bc99-11eb-9bc3-8c5246b02783.PNG)
 
 - 부하를 동시사용자 100명, 1분 동안 걸어준다.
 ```
-siege -c100 -t60S -v --content-type "application/json" 'http://room:8080/rooms POST {"desc": "Beautiful House3"}'
+siege -c100 -t60S -v --content-type "application/json" 'http://room:8080/taxis POST {"desc": "Beautiful Taxi3"}'
 ```
 - 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다
 ```
-kubectl get deploy room -w -n airbnb 
+kubectl get deploy room -w -n uber 
 ```
 - 어느정도 시간이 흐른 후 (약 30초) 스케일 아웃이 벌어지는 것을 확인할 수 있다:
 ![Autoscale (HPA)(모니터링)](https://user-images.githubusercontent.com/38099203/119299704-6a56f000-bc9a-11eb-9ba8-55e5978f3739.PNG)
@@ -903,26 +907,26 @@ Shortest transaction:           0.01
 * 먼저 무정지 재배포가 100% 되는 것인지 확인하기 위해서 Autoscaler 이나 CB 설정을 제거함
 
 ```
-kubectl delete destinationrules dr-room -n airbnb
-kubectl label namespace airbnb istio-injection-
-kubectl delete hpa room -n airbnb
+kubectl delete destinationrules dr-room -n uber
+kubectl label namespace uber istio-injection-
+kubectl delete hpa taxi -n uber
 ```
 
 - seige 로 배포작업 직전에 워크로드를 모니터링 함.
 ```
-siege -c100 -t60S -r10 -v --content-type "application/json" 'http://room:8080/rooms POST {"desc": "Beautiful House3"}'
+siege -c100 -t60S -r10 -v --content-type "application/json" 'http://room:8080/taxis POST {"desc": "Beautiful Taxi3"}'
 
 ** SIEGE 4.0.4
 ** Preparing 1 concurrent users for battle.
 The server is now under siege...
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.03 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.00 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.02 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
-HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/rooms
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.03 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.00 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.02 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
+HTTP/1.1 201     0.01 secs:     260 bytes ==> POST http://room:8080/taxis
 
 ```
 
@@ -934,7 +938,7 @@ kubectl set image ...
 - seige 의 화면으로 넘어가서 Availability 가 100% 미만으로 떨어졌는지 확인
 
 ```
-siege -c100 -t60S -r10 -v --content-type "application/json" 'http://room:8080/rooms POST {"desc": "Beautiful House3"}'
+siege -c100 -t60S -r10 -v --content-type "application/json" 'http://room:8080/taxis POST {"desc": "Beautiful Taxi3"}'
 
 
 Transactions:                   7732 hits
@@ -993,7 +997,7 @@ livenessProbe에 'cat /tmp/healthy'으로 검증하도록 함
 ```
 ![deployment yml tmp healthy](https://user-images.githubusercontent.com/38099203/119318677-8ff0f300-bcb4-11eb-950a-e3c15feed325.PNG)
 
-- kubectl describe pod room -n airbnb 실행으로 확인
+- kubectl describe pod room -n uber 실행으로 확인
 ```
 컨테이너 실행 후 90초 동인은 정상이나 이후 /tmp/healthy 파일이 삭제되어 livenessProbe에서 실패를 리턴하게 됨
 pod 정상 상태 일때 pod 진입하여 /tmp/healthy 파일 생성해주면 정상 상태 유지됨
@@ -1021,10 +1025,10 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: efs-provisioner
-  namespace: airbnb
+  namespace: uber
 
 
-kubectl get ServiceAccount efs-provisioner -n airbnb
+kubectl get ServiceAccount efs-provisioner -n uber
 NAME              SECRETS   AGE
 efs-provisioner   1         9m1s  
   
@@ -1039,7 +1043,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: efs-provisioner-runner
-  namespace: airbnb
+  namespace: uber
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -1058,12 +1062,12 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: run-efs-provisioner
-  namespace: airbnb
+  namespace: uber
 subjects:
   - kind: ServiceAccount
     name: efs-provisioner
      # replace with namespace where provisioner is deployed
-    namespace: airbnb
+    namespace: uber
 roleRef:
   kind: ClusterRole
   name: efs-provisioner-runner
@@ -1073,7 +1077,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: leader-locking-efs-provisioner
-  namespace: airbnb
+  namespace: uber
 rules:
   - apiGroups: [""]
     resources: ["endpoints"]
@@ -1083,12 +1087,12 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: leader-locking-efs-provisioner
-  namespace: airbnb
+  namespace: uber
 subjects:
   - kind: ServiceAccount
     name: efs-provisioner
     # replace with namespace where provisioner is deployed
-    namespace: airbnb
+    namespace: uber
 roleRef:
   kind: Role
   name: leader-locking-efs-provisioner
@@ -1105,7 +1109,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: efs-provisioner
-  namespace: airbnb
+  namespace: uber
 spec:
   replicas: 1
   strategy:
@@ -1139,7 +1143,7 @@ spec:
             path: /
 
 
-kubectl get Deployment efs-provisioner -n airbnb
+kubectl get Deployment efs-provisioner -n uber
 NAME              READY   UP-TO-DATE   AVAILABLE   AGE
 efs-provisioner   1/1     1            1           11m
 
@@ -1154,11 +1158,11 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: aws-efs
-  namespace: airbnb
+  namespace: uber
 provisioner: my-aws.com/aws-efs
 
 
-kubectl get sc aws-efs -n airbnb
+kubectl get sc aws-efs -n uber
 NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
 aws-efs         my-aws.com/aws-efs      Delete          Immediate              false                  4s
 ```
@@ -1172,7 +1176,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: aws-efs
-  namespace: airbnb
+  namespace: uber
   labels:
     app: test-pvc
 spec:
@@ -1184,12 +1188,12 @@ spec:
   storageClassName: aws-efs
   
   
-kubectl get pvc aws-efs -n airbnb
+kubectl get pvc aws-efs -n uber
 NAME      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 aws-efs   Bound    pvc-43f6fe12-b9f3-400c-ba20-b357c1639f00   6Ki        RWX            aws-efs        4m44s
 ```
 
-6. room pod 적용
+6. taxi pod 적용
 ```
 kubectl apply -f deployment.yml
 ```
@@ -1200,19 +1204,19 @@ kubectl apply -f deployment.yml
 ```
 NAME                              READY   STATUS    RESTARTS   AGE
 efs-provisioner-f4f7b5d64-lt7rz   1/1     Running   0          14m
-room-5df66d6674-n6b7n             1/1     Running   0          109s
-room-5df66d6674-pl25l             1/1     Running   0          109s
+taxi-5df66d6674-n6b7n             1/1     Running   0          109s
+taxi-5df66d6674-pl25l             1/1     Running   0          109s
 siege                             1/1     Running   0          2d1h
 
 
-kubectl exec -it pod/room-5df66d6674-n6b7n room -n airbnb -- /bin/sh
+kubectl exec -it pod/taxi-5df66d6674-n6b7n taxi -n uber -- /bin/sh
 / # cd /mnt/aws
 /mnt/aws # touch intensive_course_work
 ```
 ![a pod에서 파일생성](https://user-images.githubusercontent.com/38099203/119372712-9736f180-bcf2-11eb-8e57-1d6e3f4273a5.PNG)
 
 ```
-kubectl exec -it pod/room-5df66d6674-pl25l room -n airbnb -- /bin/sh
+kubectl exec -it pod/room-5df66d6674-pl25l room -n uber -- /bin/sh
 / # cd /mnt/aws
 /mnt/aws # ls -al
 total 8
@@ -1233,8 +1237,8 @@ kubectl apply -f cofingmap.yml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: airbnb-config
-  namespace: airbnb
+  name: uber-config
+  namespace: uber
 data:
   # 단일 key-value
   max_reservation_per_person: "10"
@@ -1253,12 +1257,12 @@ kubectl apply -f deployment.yml
             - name: MAX_RESERVATION_PER_PERSION
               valueFrom:
                 configMapKeyRef:
-                  name: airbnb-config
+                  name: uber-config
                   key: max_reservation_per_person
            - name: UI_PROPERTIES_FILE_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: airbnb-config
+                  name: uber-config
                   key: ui_properties_file_name
           volumeMounts:
           - mountPath: "/mnt/aws"
