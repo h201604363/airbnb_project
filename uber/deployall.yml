@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: message
-          image: 052937454741.dkr.ecr.ap-northeast-2.amazonaws.com/user05-message:1.0
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-message:v1
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -70,7 +70,7 @@ spec:
     spec:
       containers:
         - name: payment
-          image: 052937454741.dkr.ecr.ap-northeast-2.amazonaws.com/user05-payment:1.0
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-payment:v1
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -123,7 +123,7 @@ spec:
     spec:
       containers:
         - name: reservation
-          image: 052937454741.dkr.ecr.ap-northeast-2.amazonaws.com/user05-reservation:1.0
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-reservation:v1
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -160,23 +160,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: room
+  name: taxi
   namespace: uber
   labels:
-    app: room
+    app: taxi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: room
+      app: taxi
   template:
     metadata:
       labels:
-        app: room
+        app: taxi
     spec:
       containers:
-        - name: room
-          image: 052937454741.dkr.ecr.ap-northeast-2.amazonaws.com/user05-room:1.0
+        - name: taxi
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-taxi:v1
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -199,16 +199,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: room
+  name: taxi
   namespace: uber
   labels:
-    app: room
+    app: taxi
 spec:
   ports:
     - port: 8080
       targetPort: 8080
   selector:
-    app: room
+    app: taxi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -229,7 +229,7 @@ spec:
     spec:
       containers:
         - name: viewpage
-          image: 052937454741.dkr.ecr.ap-northeast-2.amazonaws.com/user05-viewpage:1.0
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-viewpage:v1
           ports:
             - containerPort: 8080
           readinessProbe:
