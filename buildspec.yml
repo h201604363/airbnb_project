@@ -32,22 +32,56 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
+
+      - cd uber/$_PROJECT_NAME1
       - mvn package -Dmaven.test.skip=true
       - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME1:$CODEBUILD_RESOLVED_SOURCE_VERSION  .
+
+      - cd ../$_PROJECT_NAME2
+      - mvn package -Dmaven.test.skip=true
       - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME2:$CODEBUILD_RESOLVED_SOURCE_VERSION  .
+
+      - cd ../$_PROJECT_NAME3
+      - mvn package -Dmaven.test.skip=true
       - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME3:$CODEBUILD_RESOLVED_SOURCE_VERSION  .
+
+      - cd ../$_PROJECT_NAME4
+      - mvn package -Dmaven.test.skip=true
       - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME4:$CODEBUILD_RESOLVED_SOURCE_VERSION  .
+
+      - cd ../$_PROJECT_NAME5
+      - mvn package -Dmaven.test.skip=true
       - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME5:$CODEBUILD_RESOLVED_SOURCE_VERSION  .
+
+      - cd ../$_PROJECT_NAME6
+      - mvn package -Dmaven.test.skip=true
       - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME6:$CODEBUILD_RESOLVED_SOURCE_VERSION  .
+
+      - cd ../../
   post_build:
     commands:
       - echo Pushing the Docker image...
+
+      - cd uber/$_PROJECT_NAME1
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME1:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
+      - cd ../$_PROJECT_NAME2
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME2:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
+      - cd ../$_PROJECT_NAME3
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME3:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
+      - cd ../$_PROJECT_NAME4
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME4:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
+      - cd ../$_PROJECT_NAME5
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME5:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
+      - cd ../$_PROJECT_NAME6
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME6:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
+      - cd ../../
+      
       - echo connect kubectl
       - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
       - kubectl config set-credentials admin --token="$KUBE_TOKEN"
