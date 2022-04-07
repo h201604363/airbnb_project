@@ -2,7 +2,7 @@ package uber;
 
 public class ReservationCancelRequested extends AbstractEvent {
     private Long rsvId;
-    private Long taxiId;
+    private Long itemId;
     private String status;
     private Long payId;
 
@@ -17,12 +17,12 @@ public class ReservationCancelRequested extends AbstractEvent {
     public void setRsvId(Long rsvId) {
         this.rsvId = rsvId;
     }
-    public Long getTaxiId() {
-        return taxiId;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setTaxiId(Long taxiId) {
-        this.taxiId = taxiId;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
     public String getStatus() {
         return status;

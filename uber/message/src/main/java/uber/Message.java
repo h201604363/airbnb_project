@@ -12,7 +12,7 @@ public class Message {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long msgId;
-    private Long taxiId;
+    private Long itemId;
     private String content;
 
 
@@ -23,12 +23,12 @@ public class Message {
     public void setMsgId(Long msgId) {
         this.msgId = msgId;
     }
-    public Long getTaxiId() {
-        return taxiId;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setTaxiId(Long taxiId) {
-        this.taxiId = taxiId;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
     public String getContent() {
         return content;

@@ -10,7 +10,7 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long rsvId;
-    private Long taxiId;
+    private Long itemId;
     private String status; // VALUE = reqReserve, reserved, reqCancel, cancelled
     private Long payId; // 결제 ID : 결재 완료시 Update, 결제 취소하는 경우 사용
 
@@ -25,9 +25,8 @@ public class Reservation {
         // 예약 요청(reqReserve) 들어온 경우
         ////////////////////////////////////
 
-        // 해당 Taxi가 Available한 상태인지 체크
-        boolean result = ReservationApplication.applicationContext.getBean(uber.external.TaxiService.class)
-                        .chkAndReqReserve(this.getTaxiId());
+        boolean result = ReservationApplication.applicationContext.getBean(uber.external.ItemService.class)
+                        .chkAndReqReserve(this.getItemId());
         System.out.println("######## Check Result : " + result);
 
         if(result) { 
@@ -39,7 +38,7 @@ public class Reservation {
             //////////////////////////////
             uber.external.Payment payment = new uber.external.Payment();
             payment.setRsvId(this.getRsvId());
-            payment.setTaxiId(this.getTaxiId());
+            payment.setItemId(this.getItemId());
             payment.setStatus("paid");
             ReservationApplication.applicationContext.getBean(uber.external.PaymentService.class)
                 .approvePayment(payment);
@@ -50,6 +49,7 @@ public class Reservation {
             ReservationCreated reservationCreated = new ReservationCreated();
             BeanUtils.copyProperties(this, reservationCreated);
             reservationCreated.publishAfterCommit();
+            
         }
     }
 
@@ -107,12 +107,12 @@ public class Reservation {
     public void setRsvId(Long rsvId) {
         this.rsvId = rsvId;
     }
-    public Long getTaxiId() {
-        return taxiId;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setTaxiId(Long taxiId) {
-        this.taxiId = taxiId;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
     public String getStatus() {
         return status;

@@ -11,7 +11,7 @@ public class Payment {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long payId;
     private Long rsvId;
-    private Long taxiId;
+    private Long itemId;
     private String status;
 
     @PostPersist
@@ -57,12 +57,12 @@ public class Payment {
         this.rsvId = rsvId;
     }
 
-    public Long getTaxiId() {
-        return taxiId;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setTaxiId(Long taxiId) {
-        this.taxiId = taxiId;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
     
     public String getStatus() {

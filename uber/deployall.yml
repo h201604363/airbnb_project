@@ -161,23 +161,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: taxi
+  name: item
   namespace: uber
   labels:
-    app: taxi
+    app: item
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: taxi
+      app: item
   template:
     metadata:
       labels:
-        app: taxi
+        app: item
     spec:
       containers:
-        - name: taxi
-          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-taxi:v1
+        - name: item
+          image: 979050235289.dkr.ecr.ap-southeast-2.amazonaws.com/team02-item:v1
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -200,16 +200,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: taxi
+  name: item
   namespace: uber
   labels:
-    app: taxi
+    app: item
 spec:
   ports:
     - port: 8080
       targetPort: 8080
   selector:
-    app: taxi
+    app: item
 ---
 apiVersion: apps/v1
 kind: Deployment

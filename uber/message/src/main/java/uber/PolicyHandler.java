@@ -30,12 +30,12 @@ public class PolicyHandler{
             /////////////////
             System.out.println("##### listener SendConfirmMsg : " + reservationConfirmed.toJson());
 
-            // taxiId 추출
-            long taxiId = reservationConfirmed.getTaxiId(); // 예약 확정된 TaxiId
-            String msgString = "예약이 완료 되었습니다. 택시 번호 : [" + taxiId +"]";
+            // itemId 추출
+            long itemId = reservationConfirmed.getItemId(); // 예약 확정된 itemId
+            String msgString = "예약이 완료 되었습니다. 택시 번호 : [" + itemId +"]";
 
             // 메시지 전송
-            sendMsg(taxiId, msgString);
+            sendMsg(itemId, msgString);
         }
     }
 
@@ -50,22 +50,22 @@ public class PolicyHandler{
             System.out.println("##### listener SendCancelMsg : " + reservationCancelled.toJson());
 
             // taxiId 추출
-            long taxiId = reservationCancelled.getTaxiId(); // 취소된 TaxiId
-            String msgString = "예약이 취소 되었습니다. 택시 번호 : [" + taxiId +"]";
+            long itemId = reservationCancelled.getItemId(); // 취소된 itemId
+            String msgString = "예약이 취소 되었습니다. 택시 번호 : [" + itemId +"]";
 
             // 메시지 전송
-            sendMsg(taxiId, msgString);
+            sendMsg(itemId, msgString);
 
         }
     }
 
-    private void sendMsg(long taxiId, String msgString)     {
+    private void sendMsg(long itemId, String msgString)     {
 
         //////////////////////////////////////////////
         // taxiId 룸에 대해 msgString으로 SMS를 쌓는다
         //////////////////////////////////////////////
         Message msg = new Message();
-        msg.setTaxiId(taxiId);
+        msg.setItemId(itemId);
         msg.setContent(msgString);
 
         // DB Insert
