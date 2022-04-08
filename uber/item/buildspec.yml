@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    _PROJECT_NAME: "team02-uber"
+    _PROJECT_NAME: "user13_items_final"
 
 phases:
   install:
